@@ -1,0 +1,146 @@
+/* Green Apple Premium Theme */
+
+/* Navigation - Remove bullets and connecting lines, use subtle left border */
+.fi-sidebar-nav {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+.fi-sidebar-nav-item,
+.fi-sidebar-nav-item ul,
+.fi-sidebar-nav-item ul li {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+.fi-sidebar-nav-item::before,
+.fi-sidebar-nav-item::after,
+.fi-sidebar-nav-item ul li::before,
+.fi-sidebar-nav-item ul li::after {
+    display: none !important;
+}
+
+/* Remove connecting lines between items */
+.fi-sidebar-group-items {
+    position: relative;
+}
+
+.fi-sidebar-group-items::before,
+.fi-sidebar-group-items::after {
+    display: none !important;
+}
+
+.fi-sidebar-group-items > li::before,
+.fi-sidebar-group-items > li::after {
+    display: none !important;
+}
+
+/* Subtle left border for sub-items instead of dots */
+.fi-sidebar-group-items > li {
+    position: relative;
+}
+
+.fi-sidebar-group-items > li:not(:last-child) {
+    border-left: 1px solid transparent;
+}
+
+.fi-sidebar-group-items > li:hover {
+    border-left-color: rgb(220 252 231);
+}
+
+.fi-sidebar-item-button {
+    border-radius: 8px !important;
+    padding: 0.75rem 1rem !important;
+    margin: 0.25rem 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    font-weight: 500 !important;
+    color: rgb(55 65 81) !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background-color: rgb(240 253 244) !important;
+    color: rgb(22 163 74) !important;
+    transform: translateX(4px);
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-button {
+    background: linear-gradient(to right, rgb(220 252 231), transparent) !important;
+    color: rgb(22 163 74) !important;
+    font-weight: 600 !important;
+    border-left: 3px solid rgb(34 197 94) !important;
+    padding-left: calc(1rem - 1px) !important;
+}
+
+.fi-sidebar-item-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    flex-shrink: 0 !important;
+}
+
+/* Enhanced table design */
+.fi-ta-table {
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.fi-ta-header-cell {
+    background: linear-gradient(to bottom, rgb(249 250 251), rgb(243 244 246)) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.05em;
+    color: rgb(75 85 99) !important;
+}
+
+.fi-ta-row:hover {
+    background-color: rgb(240 253 244) !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Enhanced buttons */
+.fi-btn-primary {
+    background: linear-gradient(to bottom right, rgb(34 197 94), rgb(22 163 74)) !important;
+    border: none !important;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.fi-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Enhanced sidebar */
+.fi-sidebar {
+    border-right: 1px solid rgb(229 231 235);
+    background: white;
+}
+
+/* Enhanced cards */
+.fi-section {
+    border-radius: 12px !important;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+.fi-section-header {
+    background: linear-gradient(to bottom, rgb(249 250 251), white) !important;
+    border-bottom: 2px solid rgb(34 197 94) !important;
+}
+
+/* Enhanced badges */
+.fi-badge {
+    font-weight: 600;
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+}
+
+/* Page header */
+.fi-header {
+    background: linear-gradient(to right, rgb(240 253 244), white);
+    border-bottom: 1px solid rgb(229 231 235);
+}
