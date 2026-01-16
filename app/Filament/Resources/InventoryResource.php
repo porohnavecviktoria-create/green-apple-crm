@@ -25,7 +25,7 @@ class InventoryResource extends Resource
     protected static ?string $navigationLabel = 'Інвентар';
     protected static ?string $pluralModelLabel = 'Інвентар';
     protected static ?string $modelLabel = 'Об\'єкт інвентарю';
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
     protected static ?string $navigationGroup = 'Склад';
     protected static ?int $navigationSort = 14;
 

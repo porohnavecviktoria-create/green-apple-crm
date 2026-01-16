@@ -22,7 +22,7 @@ class PartResource extends Resource
     protected static ?string $modelLabel = 'Запчастина';
     protected static ?string $navigationGroup = 'Склад';
     protected static ?int $navigationSort = 12;
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 
     public static function getEloquentQuery(): Builder
     {
@@ -35,6 +35,15 @@ class PartResource extends Resource
                     ->where('name', 'not like', '%Паяльник%')
                     ->where('name', 'not like', '%Переклей%')
                     ->where('name', 'not like', '%Чохол%');
+            })
+            ->where(function ($query) {
+                // Показуємо деталі з кількістю > 0 АБО дисплеї (завжди)
+                $query->where('quantity', '>', 0)
+                    ->orWhereHas('partType', function ($q) {
+                        $q->where('name', 'like', '%Дисплей%')
+                          ->orWhere('name', 'like', '%дисплей%')
+                          ->orWhere('name', 'like', '%екран%');
+                    });
             })
             ->with('partType');
     }
@@ -501,7 +510,7 @@ class PartResource extends Resource
                             ->seconds(5)
                             ->send();
                     })
-                    ->visible(fn(Part $record) => $record->status === 'Restore' && $record->quantity > 0),
+                    ->visible(fn(Part $record) => ($record->status === 'Restore' || $record->status === 'Stock') && $record->quantity > 0),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -519,10 +528,6 @@ class PartResource extends Resource
         ];
     }
 
-    public static function shouldRegisterNavigation(): bool
-    {
-        return false;
-    }
 
     public static function getPages(): array
     {

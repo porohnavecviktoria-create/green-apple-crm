@@ -10,7 +10,7 @@ class CreateOrder extends CreateRecord
 {
     protected static string $resource = OrderResource::class;
 
-аідклю    protected static ?string $title = 'Новий продаж';
+    protected static ?string $title = 'Новий продаж';
 
     protected function getCreateFormAction(): \Filament\Actions\Action
     {

@@ -24,7 +24,7 @@ class AccessoryResource extends Resource
     protected static ?string $modelLabel = 'Аксесуар';
     protected static ?string $navigationGroup = 'Склад';
     protected static ?int $navigationSort = 13;
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-sparkles';
 
     public static function getEloquentQuery(): Builder
     {

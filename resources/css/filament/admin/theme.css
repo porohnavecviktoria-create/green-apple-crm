@@ -1,53 +1,53 @@
 /* Green Apple Premium Theme */
 
-/* Navigation - Remove bullets and connecting lines, use subtle left border */
-.fi-sidebar-nav {
-    list-style: none !important;
-    padding-left: 0 !important;
-}
-
+/* Navigation - Remove ALL bullets, lines, and dots completely */
+.fi-sidebar-nav,
+.fi-sidebar-nav ul,
+.fi-sidebar-nav ul li,
 .fi-sidebar-nav-item,
 .fi-sidebar-nav-item ul,
-.fi-sidebar-nav-item ul li {
+.fi-sidebar-nav-item ul li,
+.fi-sidebar-group,
+.fi-sidebar-group-items,
+.fi-sidebar-group-items li {
     list-style: none !important;
     padding-left: 0 !important;
+    margin-left: 0 !important;
 }
 
+/* Remove ALL pseudo-elements that create lines and dots */
+.fi-sidebar-nav::before,
+.fi-sidebar-nav::after,
 .fi-sidebar-nav-item::before,
 .fi-sidebar-nav-item::after,
+.fi-sidebar-nav-item ul::before,
+.fi-sidebar-nav-item ul::after,
 .fi-sidebar-nav-item ul li::before,
-.fi-sidebar-nav-item ul li::after {
-    display: none !important;
-}
-
-/* Remove connecting lines between items */
-.fi-sidebar-group-items {
-    position: relative;
-}
-
+.fi-sidebar-nav-item ul li::after,
+.fi-sidebar-group::before,
+.fi-sidebar-group::after,
 .fi-sidebar-group-items::before,
-.fi-sidebar-group-items::after {
-    display: none !important;
-}
-
+.fi-sidebar-group-items::after,
+.fi-sidebar-group-items li::before,
+.fi-sidebar-group-items li::after,
 .fi-sidebar-group-items > li::before,
 .fi-sidebar-group-items > li::after {
     display: none !important;
+    content: none !important;
 }
 
-/* Subtle left border for sub-items instead of dots */
+/* Remove any connecting lines */
+.fi-sidebar-group-items {
+    position: relative;
+    border: none !important;
+}
+
 .fi-sidebar-group-items > li {
     position: relative;
+    border: none !important;
 }
 
-.fi-sidebar-group-items > li:not(:last-child) {
-    border-left: 1px solid transparent;
-}
-
-.fi-sidebar-group-items > li:hover {
-    border-left-color: rgb(220 252 231);
-}
-
+/* Clean button styling */
 .fi-sidebar-item-button {
     border-radius: 8px !important;
     padding: 0.75rem 1rem !important;
@@ -58,12 +58,14 @@
     font-weight: 500 !important;
     color: rgb(55 65 81) !important;
     transition: all 0.2s ease !important;
+    border-left: 2px solid transparent !important;
 }
 
 .fi-sidebar-item-button:hover {
     background-color: rgb(240 253 244) !important;
     color: rgb(22 163 74) !important;
     transform: translateX(4px);
+    border-left-color: rgb(220 252 231) !important;
 }
 
 .fi-sidebar-item-active .fi-sidebar-item-button {

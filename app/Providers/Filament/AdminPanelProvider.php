@@ -36,6 +36,7 @@ class AdminPanelProvider extends PanelProvider
                 'Аналітика',
                 'Склад',
                 'Продажі',
+                'Сервіс',
                 'Довідники',
             ])
             ->navigationItems([
@@ -48,13 +49,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -71,6 +68,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->darkMode(false)
             ->sidebarCollapsibleOnDesktop()
-            ->sidebarWidth('18rem');
+            ->sidebarWidth('18rem')
+            ->renderHook(
+                'panels::head.end',
+                fn () => view('filament.admin.styles')
+            );
     }
 }

@@ -36,6 +36,12 @@ class EditDevice extends EditRecord
     {
         // Видаляємо parts з даних, щоб не намагатися зберегти їх як звичайні поля
         unset($data['parts']);
+        
+        // Якщо imei порожнє - встановлюємо null
+        if (empty($data['imei'])) {
+            $data['imei'] = null;
+        }
+        
         return $data;
     }
 

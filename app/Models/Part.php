@@ -79,4 +79,11 @@ class Part extends Model
     {
         return $this->morphMany(Sale::class, 'saleable');
     }
+
+    public function repairs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Repair::class, 'repair_part')
+            ->withPivot('quantity', 'cost_per_unit')
+            ->withTimestamps();
+    }
 }

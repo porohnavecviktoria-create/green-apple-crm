@@ -29,8 +29,9 @@ class ViewBatch extends ViewRecord
         // Завантажуємо зв'язки для оптимізації з усіма потрібними полями
         $record->load([
             'devices' => function ($query) {
-                $query->select('id', 'batch_id', 'model', 'marker', 'imei', 'lock_status', 'description', 'purchase_cost', 'additional_costs', 'status');
+                $query->select('id', 'batch_id', 'model', 'marker', 'imei', 'lock_status', 'description', 'purchase_cost', 'additional_costs', 'status', 'selling_price');
             },
+            'devices.sales',
             'contractor'
         ]);
         return $record;
@@ -87,6 +88,100 @@ class ViewBatch extends ViewRecord
                                     ->weight('bold')
                                     ->color('gray')
                                     ->size(Infolists\Components\TextEntry\TextEntrySize::Medium),
+                            ]),
+                    ]),
+
+                Infolists\Components\Section::make('Аналітика партії')
+                    ->schema([
+                        Infolists\Components\Grid::make(2)
+                            ->schema([
+                                // Загальна ціна партії
+                                Infolists\Components\TextEntry::make('total_batch_cost')
+                                    ->label('Загальна ціна партії')
+                                    ->state(function ($record) {
+                                        $purchaseCost = (float)($record->devices->sum('purchase_cost') ?? 0);
+                                        $additionalCosts = (float)($record->devices->sum('additional_costs') ?? 0);
+                                        $total = $purchaseCost + $additionalCosts;
+                                        return number_format($total, 2, '.', ' ') . ' грн';
+                                    })
+                                    ->weight('bold')
+                                    ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
+                                
+                                // Сума продажів
+                                Infolists\Components\TextEntry::make('total_sales_amount')
+                                    ->label('На яку суму продано')
+                                    ->state(function ($record) {
+                                        $totalSales = 0;
+                                        foreach ($record->devices as $device) {
+                                            $device->load('sales');
+                                            $totalSales += (float)($device->sales->sum('sell_price') ?? 0);
+                                        }
+                                        return number_format($totalSales, 2, '.', ' ') . ' грн';
+                                    })
+                                    ->weight('bold')
+                                    ->color('success')
+                                    ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
+                                
+                                // Прибуток
+                                Infolists\Components\TextEntry::make('batch_profit')
+                                    ->label('Прибуток')
+                                    ->state(function ($record) {
+                                        $totalSales = 0;
+                                        $totalCostSold = 0;
+                                        
+                                        foreach ($record->devices as $device) {
+                                            $device->load('sales');
+                                            $deviceSales = (float)($device->sales->sum('sell_price') ?? 0);
+                                            if ($deviceSales > 0) {
+                                                // Товар продано - рахуємо собівартість
+                                                $purchaseCost = (float)($device->purchase_cost ?? 0);
+                                                $additionalCosts = (float)($device->additional_costs ?? 0);
+                                                $totalCostSold += $purchaseCost + $additionalCosts;
+                                            }
+                                            $totalSales += $deviceSales;
+                                        }
+                                        
+                                        $profit = $totalSales - $totalCostSold;
+                                        return number_format($profit, 2, '.', ' ') . ' грн';
+                                    })
+                                    ->weight('bold')
+                                    ->color(function ($record) {
+                                        $totalSales = 0;
+                                        $totalCostSold = 0;
+                                        
+                                        foreach ($record->devices as $device) {
+                                            $device->load('sales');
+                                            $deviceSales = (float)($device->sales->sum('sell_price') ?? 0);
+                                            if ($deviceSales > 0) {
+                                                $purchaseCost = (float)($device->purchase_cost ?? 0);
+                                                $additionalCosts = (float)($device->additional_costs ?? 0);
+                                                $totalCostSold += $purchaseCost + $additionalCosts;
+                                            }
+                                            $totalSales += $deviceSales;
+                                        }
+                                        
+                                        return ($totalSales - $totalCostSold) >= 0 ? 'success' : 'danger';
+                                    })
+                                    ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
+                                
+                                // Сума товарів що залишились
+                                Infolists\Components\TextEntry::make('remaining_stock_value')
+                                    ->label('На яку суму залишилось товарів')
+                                    ->state(function ($record) {
+                                        $remainingDevices = $record->devices->where('status', 'Stock');
+                                        $totalValue = 0;
+                                        
+                                        foreach ($remainingDevices as $device) {
+                                            $purchaseCost = (float)($device->purchase_cost ?? 0);
+                                            $additionalCosts = (float)($device->additional_costs ?? 0);
+                                            $totalValue += $purchaseCost + $additionalCosts;
+                                        }
+                                        
+                                        return number_format($totalValue, 2, '.', ' ') . ' грн';
+                                    })
+                                    ->weight('bold')
+                                    ->color('gray')
+                                    ->size(Infolists\Components\TextEntry\TextEntrySize::Large),
                             ]),
                     ]),
 
@@ -181,6 +276,48 @@ class ViewBatch extends ViewRecord
                             ])
                             ->columns(1),
                     ]),
+
+                Infolists\Components\Section::make('Товари що залишились на складі')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('remaining_devices_list')
+                            ->label('')
+                            ->state(function ($record) {
+                                $remainingDevices = $record->devices->where('status', 'Stock');
+                                
+                                if ($remainingDevices->isEmpty()) {
+                                    return 'Всі товари продано або списано';
+                                }
+                                
+                                $html = '<div class="overflow-x-auto"><table class="w-full text-sm border-collapse">';
+                                $html .= '<thead><tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">';
+                                $html .= '<th class="px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300">Модель</th>';
+                                $html .= '<th class="px-4 py-2 text-left text-xs font-bold text-gray-700 dark:text-gray-300">IMEI</th>';
+                                $html .= '<th class="px-4 py-2 text-right text-xs font-bold text-gray-700 dark:text-gray-300">Собівартість</th>';
+                                $html .= '<th class="px-4 py-2 text-right text-xs font-bold text-gray-700 dark:text-gray-300">Витрати</th>';
+                                $html .= '<th class="px-4 py-2 text-right text-xs font-bold text-gray-700 dark:text-gray-300">Вартість</th>';
+                                $html .= '</tr></thead><tbody>';
+                                
+                                foreach ($remainingDevices as $device) {
+                                    $purchaseCost = (float)($device->purchase_cost ?? 0);
+                                    $additionalCosts = (float)($device->additional_costs ?? 0);
+                                    $totalCost = $purchaseCost + $additionalCosts;
+                                    
+                                    $html .= '<tr class="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700/50">';
+                                    $html .= '<td class="px-4 py-2 font-medium text-gray-900 dark:text-white">' . e($device->model ?? '—') . '</td>';
+                                    $html .= '<td class="px-4 py-2 text-gray-600 dark:text-gray-400">' . e($device->imei ?? '—') . '</td>';
+                                    $html .= '<td class="px-4 py-2 text-right text-gray-600 dark:text-gray-400">' . number_format($purchaseCost, 2) . ' грн</td>';
+                                    $html .= '<td class="px-4 py-2 text-right text-gray-600 dark:text-gray-400">' . number_format($additionalCosts, 2) . ' грн</td>';
+                                    $html .= '<td class="px-4 py-2 text-right font-bold text-gray-900 dark:text-white">' . number_format($totalCost, 2) . ' грн</td>';
+                                    $html .= '</tr>';
+                                }
+                                
+                                $html .= '</tbody></table></div>';
+                                
+                                return new \Illuminate\Support\HtmlString($html);
+                            })
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn($record) => $record->devices->where('status', 'Stock')->isNotEmpty()),
             ]);
     }
 }

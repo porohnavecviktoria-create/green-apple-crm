@@ -20,7 +20,7 @@ class CustomerResource extends Resource
     protected static ?string $navigationLabel = 'Клієнтська база';
     protected static ?string $pluralModelLabel = 'Клієнти';
     protected static ?string $modelLabel = 'Клієнт';
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationGroup = 'Продажі';
     protected static ?int $navigationSort = 23;
 

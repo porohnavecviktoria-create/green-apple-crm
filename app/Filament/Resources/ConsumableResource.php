@@ -21,7 +21,7 @@ class ConsumableResource extends Resource
     protected static ?string $navigationLabel = 'Розхідники';
     protected static ?string $pluralModelLabel = 'Розхідники';
     protected static ?string $modelLabel = 'Розхідник';
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
     protected static ?string $navigationGroup = 'Склад';
     protected static ?int $navigationSort = 15;
 
@@ -189,7 +189,7 @@ class ConsumableResource extends Resource
                     })
                     ->weight('bold'),
                 Tables\Columns\TextColumn::make('cost_uah')
-                    ->label('Ціна (грн)')
+                    ->label('Собівартість (грн)')
                     ->money('UAH')
                     ->color('gray')
                     ->sortable(),

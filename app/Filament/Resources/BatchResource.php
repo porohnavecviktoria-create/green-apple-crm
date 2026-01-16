@@ -20,7 +20,7 @@ class BatchResource extends Resource
     protected static ?string $modelLabel = 'Партія';
     protected static ?string $navigationGroup = 'Склад';
     protected static ?int $navigationSort = 11;
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     public static function form(Form $form): Form
     {
