@@ -94,12 +94,15 @@ class BatchResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Перегляд'),
+                Tables\Actions\EditAction::make()
+                    ->label('Редагувати'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Видалити'),
                 ]),
             ]);
     }

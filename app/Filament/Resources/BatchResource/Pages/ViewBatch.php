@@ -65,25 +65,25 @@ class ViewBatch extends ViewRecord
                             ->schema([
                                 Infolists\Components\TextEntry::make('devices_count')
                                     ->label('Кількість пристроїв')
-                                    ->formatStateUsing(fn($record) => $record->devices->count())
+                                    ->state(fn($record) => $record->devices->count())
                                     ->badge()
                                     ->color('info')
                                     ->size(Infolists\Components\TextEntry\TextEntrySize::Medium),
                                 Infolists\Components\TextEntry::make('total_purchase_cost')
                                     ->label('Собівартість')
-                                    ->money('UAH')
-                                    ->formatStateUsing(function ($record) {
-                                        return $record->devices->sum('purchase_cost');
+                                    ->state(function ($record) {
+                                        $cost = (float)($record->devices->sum('purchase_cost') ?? 0);
+                                        return number_format($cost, 2, '.', ' ') . ' грн';
                                     })
                                     ->color('gray')
                                     ->size(Infolists\Components\TextEntry\TextEntrySize::Medium),
                                 Infolists\Components\TextEntry::make('total_expenses')
                                     ->label('Загальна сума витрат')
-                                    ->money('UAH')
-                                    ->formatStateUsing(function ($record) {
-                                        $purchaseCost = $record->devices->sum('purchase_cost');
-                                        $additionalCosts = $record->devices->sum('additional_costs');
-                                        return $purchaseCost + $additionalCosts;
+                                    ->state(function ($record) {
+                                        $purchaseCost = (float)($record->devices->sum('purchase_cost') ?? 0);
+                                        $additionalCosts = (float)($record->devices->sum('additional_costs') ?? 0);
+                                        $total = $purchaseCost + $additionalCosts;
+                                        return number_format($total, 2, '.', ' ') . ' грн';
                                     })
                                     ->weight('bold')
                                     ->color('gray')

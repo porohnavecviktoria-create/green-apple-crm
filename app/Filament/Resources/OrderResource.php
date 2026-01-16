@@ -485,12 +485,15 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Перегляд'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Видалити'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Видалити'),
                 ]),
             ])
             ->defaultSort('completed_at', 'desc');

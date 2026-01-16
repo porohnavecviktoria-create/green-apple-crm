@@ -115,7 +115,28 @@ class CreateBatch extends CreateRecord
                                             ->label('Валюта')
                                             ->options(['UAH' => '₴ UAH', 'EUR' => '€ EUR', 'USD' => '$ USD'])
                                             ->default('UAH')
-                                            ->reactive(),
+                                            ->live()
+                                            ->afterStateUpdated(function (Forms\Set $set, $state) {
+                                                if ($state === 'UAH') {
+                                                    $set('exchange_rate', 1);
+                                                    return;
+                                                }
+                                                try {
+                                                    $response = \Illuminate\Support\Facades\Http::timeout(5)->get("https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11");
+                                                    if ($response->successful()) {
+                                                        $data = $response->json();
+                                                        foreach ($data as $curr) {
+                                                            if ($curr['ccy'] === $state) {
+                                                                $rate = round((float) $curr['sale'], 2);
+                                                                $set('exchange_rate', $rate);
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (\Exception $e) {
+                                                    \Illuminate\Support\Facades\Log::error('PrivatBank API Error: ' . $e->getMessage());
+                                                }
+                                            }),
                                         Forms\Components\TextInput::make('purchase_price_currency')
                                             ->label('Ціна закупки')
                                             ->numeric()
@@ -125,7 +146,10 @@ class CreateBatch extends CreateRecord
                                             ->label('Курс')
                                             ->numeric()
                                             ->default(1)
-                                            ->reactive(),
+                                            ->required()
+                                            ->reactive()
+                                            ->placeholder('Чекайте...')
+                                            ->helperText('Курс ПриватБанку'),
                                         Forms\Components\TextInput::make('additional_costs')
                                             ->label('Дод. витрати (₴)')
                                             ->numeric()

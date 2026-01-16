@@ -78,13 +78,17 @@ class CustomerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Перегляд'),
+                Tables\Actions\EditAction::make()
+                    ->label('Редагувати'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Видалити'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Видалити'),
                 ]),
             ]);
     }

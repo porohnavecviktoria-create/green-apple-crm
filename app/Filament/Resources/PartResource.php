@@ -511,12 +511,15 @@ class PartResource extends Resource
                             ->send();
                     })
                     ->visible(fn(Part $record) => ($record->status === 'Restore' || $record->status === 'Stock') && $record->quantity > 0),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Редагувати'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Видалити'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Видалити'),
                 ]),
             ]);
     }

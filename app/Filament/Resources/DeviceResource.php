@@ -432,6 +432,10 @@ class DeviceResource extends Resource
                     ->query(fn($query) => $query->whereNull('marker')->orWhere('marker', '')),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->label('Перегляд'),
+                Tables\Actions\EditAction::make()
+                    ->label('Редагувати'),
                 Tables\Actions\Action::make('show_breakdown')
                     ->label('Витрати')
                     ->icon('heroicon-o-calculator')
@@ -666,11 +670,13 @@ class DeviceResource extends Resource
                             ->send();
                     })
                     ->visible(fn (Device $record) => $record->status !== 'Scrap'),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Редагувати'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Видалити'),
                 ]),
             ]);
     }
